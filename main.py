@@ -21,24 +21,34 @@ class ImmuneNetwork:
             ):
 
         for i in range(len(Data)):
+            
+            """
+                X:  Matrix of data vectors. 
+                Y:  Matrix of detector vectors. 
+                D:  Matrix of Euclidean distances between x and y.
+                ix: List of indices.
+                Z:  Matrix of detector vector clones.
 
-            X = [Data[i]]*len(Detectors)
-            X = np.array(X)
-            Y = Detectors 
-            DRXY = [np.linalg.norm(x-y) for x,y in zip(X,Y)]
-            DRXY = np.array(DRXY)
-            DRXY_ix = DRXY.argsort()[-1*n_maximums:][::-1]
-            DRXY = DRXY[DRXY_ix]
-            DRXY = DRXY/DRXY.sum()
-            DRXY_clones = DRXY*n_clones 
-            DRXY_clones = DRXY_clones.astype(int)
-            Y_clones = Y[DRXY_ix]
-            Y_clones = [[Y_clones[ix]]*DRXY_clones[ix] for ix in DRXY_ix]
-            Y_clones = np.array(Y_clones)
-            Y = Y - learning_rate * (Y[DRXY_ix]-X)
-            DRXY = [np.linalg.norm(x-y) for x,y in zip(X,Y)]
-            DRXY = np.array(DRXY)
+            """
 
+            X,Y = [np.array([Data[i]]*len(Detectors)), Detectors] 
+            D = np.array([np.linalg.norm(x-y) for x,y in zip(X,Y)]) 
+            ix = D.argsort()[-1*n_maximums:][::-1] 
+            D = D[ix]
+            D = D/D.sum()
+            D = D*n_clones
+            D = D.astype(int) 
+            Z = Y[ix]
+            Z = [[Z[idx]]*D[idx] for idx in ix]
+            Z = np.array(Z)
+            
+
+
+            """
+                Y = Y - learning_rate * (Y[DRXY_ix]-X)
+                DRXY = [np.linalg.norm(x-y) for x,y in zip(X,Y)]
+                DRXY = np.array(DRXY)
+            """
 
 # delta = number of highest affinity cells. 
 # n_clones = total number of clones.

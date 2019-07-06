@@ -33,17 +33,16 @@ class ImmuneNetwork:
 
             X,Y = [np.array([Data[i]]*len(Detectors)), Detectors] 
             D = np.array([np.linalg.norm(x-y) for x,y in zip(X,Y)]) 
-            ix = D.argsort()[-1*n_maximums:][::-1] 
+            ix = D.argsort()[-1*n_maximums:][::-1]         
             D = D[ix]
             D = D/D.sum()
             D = D*n_clones
             D = D.astype(int) 
             Z = Y[ix]
-            Z = [[Z[idx]]*D[idx] for idx in ix]
-            Z = np.array(Z)
+            Z = np.repeat(Z,D,axis=0)
+            if i>0: 
+                C = C-learning_rate*(C-Z) 
             
-
-
             """
                 Y = Y - learning_rate * (Y[DRXY_ix]-X)
                 DRXY = [np.linalg.norm(x-y) for x,y in zip(X,Y)]

@@ -1,27 +1,38 @@
 import numpy as np
 
-class ImmuneNetwork:
+def fit(X, C, a, hn, hp, cs, nc):
+    
+    i=0
+    
+    while (i<100):
+        
+        D = np.array([np.linalg.norm(c-X) for c in C])
 
-    def __init__(X,C,D,S,a,b,c,d,e,f):
-        self.X = X        # Data Matrix 
-        self.C = C        # Network Cell Matrix 
-        self.D = D        # Dissimilarity Matrix 
-        self.S = S        # Similarity Matrix 
-        self.a = a        # Number of Clones 
-        self.b = b        # Number of High Affinity Cells to Clone and Mutate
-        self.c = c        # Percentage of Mature Cells to be Selected 
-        self.d = d        # Death Rate 
-        self.e = e        # Suppression Rate 
-        self.f = f        # Number of Iterations
-        return None 
+        ixs = D.argsort()[-hn:][::1]
+        HAF_Cells_D = D[ixs]
+        HAF_Cells_N = (HAF_Cells_D / sum(HAF_Cells_D)) * nc
+        HAF_Cells_N = HAF_Cells_N.astype(int) 
+        HAF_Cells = C[ixs]
+        HAF_Cells = np.repeat(HAF_Cells, HAF_Cells_N, axis=0)
+        HAF_Cells = np.array([cell-a*(cell-X) for cell in HAF_Cells])
+        HAF_Cells = np.reshape(HAF_Cells, (HAF_Cells.shape[0]*HAF_Cells.shape[1], HAF_Cells.shape[2]))
 
-    def fit(): 
-        for iteration in range(self.f): 
-            for i in range(len(self.X)):
-                for j in range(len(self.C)): 
-                    D[i][j] = np.linalg.norm(self.X[i]-self.C[j])
-                    
-        return None 
+        D = np.array([np.linalg.norm(cell-X) for cell in HAF_Cells])
+        ixs = D.argsort()[int((1-hp)*D.shape[0]):][::1]
+        D = D[ixs]
+        M = HAF_Cells[ixs]
 
-    def predict(): 
-        return None
+        S = np.array([np.linalg.norm(m-M) for m in M])
+        ixs = S.argsort()[-int((1-cs)*S.shape[0]):][::1]
+        M = M[ixs]
+        C = np.append(C, M, axis=0)
+
+        S = np.array([np.linalg.norm(c-C) for c in C])
+
+        ixs = S.argsort()[-int((1-cs)*S.shape[0]):][::1]
+        C = C[ixs]
+        
+        i+=1
+        
+    print (C.shape)
+    print (C)

@@ -7,7 +7,6 @@ def fit(X, C, a, hn, hp, cs, nc):
     while (i<100):
         
         D = np.array([np.linalg.norm(c-X) for c in C])
-
         ixs = D.argsort()[-hn:][::1]
         HAF_Cells_D = D[ixs]
         HAF_Cells_N = (HAF_Cells_D / sum(HAF_Cells_D)) * nc

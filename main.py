@@ -199,7 +199,7 @@ print (AG.shape)
     With the number of antibodies less than antigens (by a factor of 10), then clustering increases in accuracy. 
 """
 
-def execute(AG=AG, iterations=10, p_select=0.2, n_clones=10, learn_rate=0.5, p_haf_cells=1, M_threshold=0.8, n_experiment=1):
+def execute(AG=AG, iterations=50, p_select=0.2, n_clones=10, learn_rate=0.5, p_haf_cells=1, M_threshold=0.8, n_experiment=1):
     
 
     AB = np.random.rand(10,2)*10
